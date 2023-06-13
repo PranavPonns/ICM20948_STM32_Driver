@@ -68,9 +68,9 @@
 class ICM_20948 {
 
 	struct Readings {
-		int16_t x;
-		int16_t y;
-		int16_t z;
+		float x;
+		float y;
+		float z;
 	};
 
 public:
@@ -81,6 +81,7 @@ public:
 	bool isDeviceReady();
 
 	void initIMU();
+	void updateIMU();
 
 	void readFIFO(uint8_t *buf);
 
@@ -88,13 +89,12 @@ public:
 	float getYaw();
 	float getPitch();
 
-	void updateGyro();
+
 	int16_t getGyroX();
 	int16_t getGyroY();
 	int16_t getGyroZ();
 
-	int16_t* getAccel();
-	void updateAccel();
+
 	float getAccelX();
 	float getAccelY();
 	float getAccelZ();
@@ -106,20 +106,33 @@ public:
 
 	int16_t getTemp();
 
+
 private:
 
 	Readings gyroReading;
 	Readings accelReading;
 	Readings magReading;
 
-	int8_t currentRoll;
+	int16_t temperature;
 
-//	HAL_StatusTypeDef writeMagReg(uint_t reg, uint8_t data);
+	void initMag();
 
-	HAL_StatusTypeDef writeReg(int regAddress, int data, int dataAmount,
+	HAL_StatusTypeDef updateGyro();
+	HAL_StatusTypeDef updateAccel();
+	HAL_StatusTypeDef updateMag();
+	void updateTemp();
+
+
+	HAL_StatusTypeDef selUserBank(uint8_t userbank);
+
+	HAL_StatusTypeDef writeICMReg(int regAddress, int data, int dataAmount,
 			int userbank);
-	HAL_StatusTypeDef readReg(int regAddress, uint8_t *buf, int dataAmount);
-	uint8_t readReg(int regAddress, int dataAmount);
+	HAL_StatusTypeDef readICMReg(int regAddress, uint8_t *buf, int dataAmount);
+	uint8_t readICMReg(int regAddress, int dataAmount);
+
+	HAL_StatusTypeDef writeMagReg(uint8_t reg, uint8_t data);
+	HAL_StatusTypeDef readMagReg(uint8_t reg);
+	uint8_t* readMagReg(uint8_t reg, uint8_t len);
 
 	int16_t twoComplementToDec(uint16_t val);
 	uint16_t addBinary(uint8_t b1, uint8_t b2);

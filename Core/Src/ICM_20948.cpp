@@ -23,15 +23,15 @@ void ICM_20948::initIMU() {
  * 7. Chose the full scale for both gyro and accel
  */
 
-	writeReg(USER_CTRL, 0b00000010, 1, 0);
-	HAL_Delay(100);
-	writeReg(USER_CTRL, 0b00100000, 1, 0);
-
-	writeReg(I2C_MST_CTRL, 0b00000111, 1, 3);
-
-	writeReg(LP_CONFIG, 0x40, 1, 0);
-
-	writeReg(I2C_MST_ODR_CONFIG, 0b00000011, 1, 3);
+//	writeReg(USER_CTRL, 0b00000010, 1, 0);
+//	HAL_Delay(100);
+//	writeReg(USER_CTRL, 0b00100000, 1, 0);
+//
+//	writeReg(I2C_MST_CTRL, 0b00000111, 1, 3);
+//
+//	writeReg(LP_CONFIG, 0x40, 1, 0);
+//
+//	writeReg(I2C_MST_ODR_CONFIG, 0b00000011, 1, 3);
 }
 
 /*
@@ -54,156 +54,120 @@ void ICM_20948::initIMU() {
 //	}
 //}
 
-//int16_t* ICM_20948::getGyro(){
-//
-//	int16_t *buf = new int16_t[3];
-//	uint8_t temp[6];
-//
-//	readReg(GYRO_XOUT_H, temp, 6);
-//
-//	buf[0] = twoComplementToDec(addBinary(buf[1], buf[0]));
-//	buf[1] = twoComplementToDec(addBinary(buf[3], buf[2]));
-//	buf[2] = twoComplementToDec(addBinary(buf[5], buf[4]));
-//
-//	return buf;
-//}
+void ICM_20948::initMag(){
 
-void ICM_20948::updateGyro() {
-	uint8_t temp[6];
-
-	readReg(GYRO_XOUT_H, temp, 6);
-
-	gyroReading.x = twoComplementToDec(addBinary(temp[1], temp[0]));
-	gyroReading.y = twoComplementToDec(addBinary(temp[3], temp[2]));
-	gyroReading.z = twoComplementToDec(addBinary(temp[5], temp[4]));
 }
 
-void ICM_20948::updateAccel() {
-	uint8_t temp[6];
 
-	readReg(ACCEL_XOUT_H, temp, 6);
-
-	accelReading.x = twoComplementToDec(addBinary(temp[1], temp[0]));
-	accelReading.y = twoComplementToDec(addBinary(temp[3], temp[2]));
-	accelReading.z = twoComplementToDec(addBinary(temp[5], temp[4]));
-}
-
-int16_t* ICM_20948::getAccel(){
-
-	int16_t *buf = new int16_t[3];
-	uint8_t temp[6];
-
-	readReg(ACCEL_XOUT_H, temp, 6);
-
-	buf[0] = twoComplementToDec(addBinary(buf[1], buf[0]));
-	buf[1] = twoComplementToDec(addBinary(buf[3], buf[2]));
-	buf[2] = twoComplementToDec(addBinary(buf[5], buf[4]));
-
-	return buf;
-}
-
-//float ICM_20948::getPitch() {
-//	return atan2(getAccelX(), getAccelZ()) * 360 / (2 * M_PI);
-//}
-float ICM_20948::getPitch() {
+void ICM_20948::updateIMU(){
+	updateGyro();
 	updateAccel();
-	return atan2(accelReading.x, accelReading.z) * 360 / (2 * M_PI);
+	updateMag();
+}
+
+HAL_StatusTypeDef ICM_20948::updateGyro() {
+	uint8_t temp[6];
+	HAL_StatusTypeDef ret;
+
+	ret = readICMReg(GYRO_XOUT_H, temp, 6);
+
+	if (ret == HAL_OK) {
+		gyroReading.x = twoComplementToDec(
+				addBinary(temp[1], temp[0])) / GYRO_SENSITIVITY;
+		gyroReading.y = twoComplementToDec(
+				addBinary(temp[3], temp[2])) / GYRO_SENSITIVITY;
+		gyroReading.z = twoComplementToDec(
+				addBinary(temp[5], temp[4])) / GYRO_SENSITIVITY;
+	} else {
+		gyroReading.x = -999;
+		gyroReading.y = -999;
+		gyroReading.z = -999;
+	}
+
+	return ret;
+}
+
+HAL_StatusTypeDef ICM_20948::updateAccel() {
+	uint8_t temp[6];
+	HAL_StatusTypeDef ret;
+
+	ret = readICMReg(ACCEL_XOUT_H, temp, 6);
+
+	if (ret == HAL_OK) {
+		accelReading.x = twoComplementToDec(
+				addBinary(temp[1], temp[0])) / ACCEL_SENSITIVITY;
+		accelReading.y = twoComplementToDec(
+				addBinary(temp[3], temp[2])) / ACCEL_SENSITIVITY;
+		accelReading.z = twoComplementToDec(
+				addBinary(temp[5], temp[4])) / ACCEL_SENSITIVITY;
+	} else {
+		accelReading.x = -999;
+		accelReading.y = -999;
+		accelReading.z = -999;
+	}
+
+	return ret;
+}
+
+HAL_StatusTypeDef ICM_20948::updateMag(){
+	return HAL_OK;
+}
+
+void ICM_20948::updateTemp() {
+	uint8_t buf[2];
+	HAL_StatusTypeDef ret;
+
+	ret = readICMReg(TEMP_OUT_H, buf, 2);
+	int temp = twoComplementToDec(addBinary(buf[1], buf[0]));
+
+	if (ret == HAL_OK) {
+		temperature = ((temp - 21) / 400) + 21;
+	} else {
+		temperature = -999;
+	}
+}
+
+float ICM_20948::getPitch() {
+	return atan2(getAccelX(), getAccelZ()) * 360 / (2 * M_PI);
 }
 
 float ICM_20948::getRoll() {
 	return atan2(getAccelY(), getAccelZ()) * 360 / (2 * M_PI);
 }
 
+//Angular velocity in each axis
 int16_t ICM_20948::getGyroX()
 {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(GYRO_XOUT_H, buf, 2);
-	int xGyro = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return xGyro / GYRO_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return gyroReading.x;
 }
 
 int16_t ICM_20948::getGyroY() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(GYRO_YOUT_H, buf, 2);
-	int yGyro = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return yGyro / GYRO_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return gyroReading.y;
 }
 
 int16_t ICM_20948::getGyroZ() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(GYRO_ZOUT_H, buf, 2);
-	int zGyro = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return zGyro / GYRO_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return gyroReading.z;
 }
 
+//Acceleration in each axis
 float ICM_20948::getAccelX() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(ACCEL_XOUT_H, buf, 2);
-	int xAccel = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return float(xAccel) / ACCEL_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return accelReading.x;
 }
 
 float ICM_20948::getAccelY() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(ACCEL_YOUT_H, buf, 2);
-	int yAccel = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return float(yAccel) / ACCEL_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return accelReading.y;
 }
 
 float ICM_20948::getAccelZ() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(ACCEL_ZOUT_H, buf, 2);
-	int zAccel = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return float(zAccel) / ACCEL_SENSITIVITY;
-	} else {
-		return -99;
-	}
+	return accelReading.z;
 }
 
+//Magnometer reading in each axis
 float ICM_20948::getMagX() {
 	uint8_t buf[2];
 	HAL_StatusTypeDef ret;
 
-	ret = readReg(EXT_SLV_SENS_DATA_00, buf, 2);
+	ret = readICMReg(EXT_SLV_SENS_DATA_00, buf, 2);
 	int xMag = twoComplementToDec(addBinary(buf[0], buf[1]));
 
 	if (ret == HAL_OK) {
@@ -220,19 +184,11 @@ int16_t ICM_20948::getMagZ() {
 
 }
 
-int16_t ICM_20948::getTemp() {
-	uint8_t buf[2];
-	HAL_StatusTypeDef ret;
-
-	ret = readReg(TEMP_OUT_H, buf, 2);
-	int temp = twoComplementToDec(addBinary(buf[1], buf[0]));
-
-	if (ret == HAL_OK) {
-		return ((temp - 21) / 400) + 21;
-	} else {
-		return -99;
-	}
+int16_t ICM_20948::getTemp(){
+	return temperature;
 }
+
+
 
 bool ICM_20948::isDeviceReady() {
 	HAL_StatusTypeDef ret = HAL_I2C_IsDeviceReady(&i2c, address, 1, 100);
@@ -243,10 +199,10 @@ bool ICM_20948::isDeviceReady() {
 	}
 }
 
-HAL_StatusTypeDef ICM_20948::writeReg(int regAddress, int data,
+HAL_StatusTypeDef ICM_20948::writeICMReg(int regAddress, int data,
 		int dataAmount, int userbank) {
 
-	writeReg(REG_BANK_SEL, userbank << 4, 1, 1);
+	selUserBank(userbank);
 
 	HAL_StatusTypeDef ret;
 	uint8_t temp = data;
@@ -255,7 +211,7 @@ HAL_StatusTypeDef ICM_20948::writeReg(int regAddress, int data,
 	return ret;
 }
 
-HAL_StatusTypeDef ICM_20948::readReg(int regAddress, uint8_t *buf,
+HAL_StatusTypeDef ICM_20948::readICMReg(int regAddress, uint8_t *buf,
 		int dataAmount) {
 	HAL_StatusTypeDef ret;
 	ret = HAL_I2C_Mem_Read(&i2c, address, regAddress, 1, buf, dataAmount,
@@ -263,19 +219,23 @@ HAL_StatusTypeDef ICM_20948::readReg(int regAddress, uint8_t *buf,
 	return ret;
 }
 
-uint8_t ICM_20948::readReg(int regAddress, int dataAmount) {
+uint8_t ICM_20948::readICMReg(int regAddress, int dataAmount) {
 	uint8_t buf[1];
 	HAL_I2C_Mem_Read(&i2c, address, regAddress, 1, buf, dataAmount,
 	HAL_MAX_DELAY);
 	return buf[0];
 }
 
-//Works
+HAL_StatusTypeDef ICM_20948::selUserBank(uint8_t userbank){
+	HAL_StatusTypeDef ret;
+	ret = writeICMReg(REG_BANK_SEL, userbank << 4, 1, 1);
+	return ret;
+}
+
 uint16_t ICM_20948::addBinary(uint8_t lowByte, uint8_t highByte) {
 	return ((highByte << 8) | lowByte);
 }
 
-//Works
 int16_t ICM_20948::twoComplementToDec(uint16_t val) {
 	if ((val & 0x8000) == 0) {
 		return val;

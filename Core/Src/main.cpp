@@ -287,10 +287,10 @@ int main(void)
 //		sprintf(str, "GYRO X:%d Y:%d Z:%d\r\n", IMU.getGyroX(), IMU.getGyroY(), IMU.getGyroZ());
 //		Uprint(str);
 
-
+		IMU.updateIMU();
 		sprintf(str, "%f\r\n", IMU.getPitch());
 		Uprint(str);
-		HAL_Delay(100);
+		HAL_Delay(500);
 
     /* USER CODE BEGIN 3 */
 	}
