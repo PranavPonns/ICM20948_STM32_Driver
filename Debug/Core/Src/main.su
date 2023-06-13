@@ -1,0 +1,14 @@
+../Core/Src/main.cpp:91:6:void Uprint(char*)	120	static
+../Core/Src/main.cpp:98:9:int16_t twoComplementToDec(uint16_t)	16	static
+../Core/Src/main.cpp:107:10:uint16_t addBinary(uint8_t, uint8_t)	16	static
+../Core/Src/main.cpp:111:19:HAL_StatusTypeDef readReg(int, uint8_t*, int)	48	static
+../Core/Src/main.cpp:119:9:int16_t getGyroX()	24	static
+../Core/Src/main.cpp:133:5:int getTemp()	24	static
+../Core/Src/main.cpp:162:19:HAL_StatusTypeDef configReg(int, int, int)	56	static
+../Core/Src/main.cpp:170:6:void configIMU()	40	static
+../Core/Src/main.cpp:215:5:int main()	312	static
+../Core/Src/main.cpp:308:6:void SystemClock_Config()	88	static
+../Core/Src/main.cpp:355:13:void MX_I2C1_Init()	8	static
+../Core/Src/main.cpp:389:13:void MX_USART2_UART_Init()	8	static
+../Core/Src/main.cpp:422:13:void MX_GPIO_Init()	48	static
+../Core/Src/main.cpp:462:6:void Error_Handler()	4	static,ignoring_inline_asm

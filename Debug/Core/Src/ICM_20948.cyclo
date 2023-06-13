@@ -1,0 +1,25 @@
+cmath:144:3:constexpr float std::atan2(float, float)	1
+ICM_20948.cpp:10:1:ICM_20948::ICM_20948(I2C_HandleTypeDef, uint8_t)	1
+ICM_20948.cpp:15:6:void ICM_20948::initIMU()	1
+ICM_20948.cpp:71:6:void ICM_20948::updateGyro()	1
+ICM_20948.cpp:81:6:void ICM_20948::updateAccel()	1
+ICM_20948.cpp:91:10:int16_t* ICM_20948::getAccel()	1
+ICM_20948.cpp:108:7:float ICM_20948::getPitch()	1
+ICM_20948.cpp:113:7:float ICM_20948::getRoll()	1
+ICM_20948.cpp:117:9:int16_t ICM_20948::getGyroX()	2
+ICM_20948.cpp:132:9:int16_t ICM_20948::getGyroY()	2
+ICM_20948.cpp:146:9:int16_t ICM_20948::getGyroZ()	2
+ICM_20948.cpp:160:7:float ICM_20948::getAccelX()	2
+ICM_20948.cpp:174:7:float ICM_20948::getAccelY()	2
+ICM_20948.cpp:188:7:float ICM_20948::getAccelZ()	2
+ICM_20948.cpp:202:7:float ICM_20948::getMagX()	2
+ICM_20948.cpp:216:9:int16_t ICM_20948::getMagY()	1
+ICM_20948.cpp:219:9:int16_t ICM_20948::getMagZ()	1
+ICM_20948.cpp:223:9:int16_t ICM_20948::getTemp()	2
+ICM_20948.cpp:237:6:bool ICM_20948::isDeviceReady()	2
+ICM_20948.cpp:246:19:HAL_StatusTypeDef ICM_20948::writeReg(int, int, int, int)	1
+ICM_20948.cpp:258:19:HAL_StatusTypeDef ICM_20948::readReg(int, uint8_t*, int)	1
+ICM_20948.cpp:266:9:uint8_t ICM_20948::readReg(int, int)	1
+ICM_20948.cpp:274:10:uint16_t ICM_20948::addBinary(uint8_t, uint8_t)	1
+ICM_20948.cpp:279:9:int16_t ICM_20948::twoComplementToDec(uint16_t)	2
+cmath:155:5:constexpr typename __gnu_cxx::__promote_2<_Tp, _Up>::__type std::atan2(_Tp, _Up) [with _Tp = short int; _Up = short int]	1
