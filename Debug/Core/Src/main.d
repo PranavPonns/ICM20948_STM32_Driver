@@ -27,7 +27,14 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Src/ICM_20948.h
+ ../Core/Inc/../../Drivers/Fusion/Fusion.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionAhrs.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionConvention.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionMath.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionAxes.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionCalibration.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionCompass.h \
+ ../Core/Inc/../../Drivers/Fusion/FusionOffset.h ../Core/Src/ICM_20948.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -57,4 +64,12 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+../Core/Inc/../../Drivers/Fusion/Fusion.h:
+../Core/Inc/../../Drivers/Fusion/FusionAhrs.h:
+../Core/Inc/../../Drivers/Fusion/FusionConvention.h:
+../Core/Inc/../../Drivers/Fusion/FusionMath.h:
+../Core/Inc/../../Drivers/Fusion/FusionAxes.h:
+../Core/Inc/../../Drivers/Fusion/FusionCalibration.h:
+../Core/Inc/../../Drivers/Fusion/FusionCompass.h:
+../Core/Inc/../../Drivers/Fusion/FusionOffset.h:
 ../Core/Src/ICM_20948.h:

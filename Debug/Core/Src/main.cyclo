@@ -1,14 +1,17 @@
-main.cpp:91:6:void Uprint(char*)	1
-main.cpp:98:9:int16_t twoComplementToDec(uint16_t)	2
-main.cpp:107:10:uint16_t addBinary(uint8_t, uint8_t)	1
-main.cpp:111:19:HAL_StatusTypeDef readReg(int, uint8_t*, int)	1
-main.cpp:119:9:int16_t getGyroX()	2
-main.cpp:133:5:int getTemp()	2
-main.cpp:162:19:HAL_StatusTypeDef configReg(int, int, int)	1
-main.cpp:170:6:void configIMU()	3
-main.cpp:215:5:int main()	2
-main.cpp:308:6:void SystemClock_Config()	3
-main.cpp:355:13:void MX_I2C1_Init()	2
-main.cpp:389:13:void MX_USART2_UART_Init()	2
-main.cpp:422:13:void MX_GPIO_Init()	1
-main.cpp:462:6:void Error_Handler()	1
+FusionMath.h:136:21:float FusionRadiansToDegrees(float)	1
+FusionMath.h:148:21:float FusionAsin(float)	3
+FusionMath.h:456:27:FusionEuler FusionQuaternionToEuler(FusionQuaternion)	1
+main.cpp:92:6:void Uprint(char*)	1
+main.cpp:99:9:int16_t twoComplementToDec(uint16_t)	2
+main.cpp:108:10:uint16_t addBinary(uint8_t, uint8_t)	1
+main.cpp:112:19:HAL_StatusTypeDef readReg(int, uint8_t*, int)	1
+main.cpp:120:9:int16_t getGyroX()	2
+main.cpp:134:5:int getTemp()	2
+main.cpp:163:19:HAL_StatusTypeDef configReg(int, int, int)	1
+main.cpp:171:6:void configIMU()	3
+main.cpp:216:5:int main()	2
+main.cpp:319:6:void SystemClock_Config()	3
+main.cpp:366:13:void MX_I2C1_Init()	2
+main.cpp:400:13:void MX_USART2_UART_Init()	2
+main.cpp:433:13:void MX_GPIO_Init()	1
+main.cpp:473:6:void Error_Handler()	1

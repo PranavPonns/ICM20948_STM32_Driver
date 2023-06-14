@@ -44,6 +44,7 @@
 I2C_HandleTypeDef hi2c1;
 
 UART_HandleTypeDef huart2;
+#define SAMPLE_PERIOD 1
 
 /* USER CODE BEGIN PV */
 //static const uint8_t TMP102_ADDR = 0x52 << 1; // Use 8-bit address
@@ -263,10 +264,14 @@ int main(void)
 //	float temp_c;
 
   	ICM_20948 IMU(hi2c1, addr);
+	FusionAhrs ahrs;
+	FusionAhrsInitialise(&ahrs);
+
 
 
 	while (1)
 	{
+
     /* USER CODE END WHILE */
 //		uint8_t buf[1];
 //		uint8_t buf2[1];
@@ -288,9 +293,15 @@ int main(void)
 //		Uprint(str);
 
 		IMU.updateIMU();
-		sprintf(str, "%f\r\n", IMU.getPitch());
+		const FusionVector gyroscope = { IMU.getGyroX(), IMU.getGyroY(), IMU.getGyroZ() }; // replace this with actual gyroscope data in degrees/s
+		const FusionVector accelerometer = { IMU.getAccelX(), IMU.getAccelY(), IMU.getAccelZ()}; // replace this with actual accelerometer data in g
+		FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer,
+						SAMPLE_PERIOD);
+		const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+		sprintf(str,"Roll %0.1f, Pitch %0.1f, Yaw %0.1f\r\n", euler.angle.roll, euler.angle.pitch, euler.angle.yaw);
+//		sprintf(str, "%f\r\n", IMU.getMagX());
 		Uprint(str);
-		HAL_Delay(500);
+		HAL_Delay(1000);
 
     /* USER CODE BEGIN 3 */
 	}

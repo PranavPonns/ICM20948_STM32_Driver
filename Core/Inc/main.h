@@ -35,6 +35,8 @@ extern "C" {
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include "../../Drivers/Fusion/Fusion.h"
+#include <time.h>
 
 
 /* USER CODE END Includes */

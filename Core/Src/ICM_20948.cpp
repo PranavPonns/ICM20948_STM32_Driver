@@ -10,9 +10,14 @@
 ICM_20948::ICM_20948(I2C_HandleTypeDef handle, uint8_t addr) {
 	address = addr;
 	i2c = handle;
+
+	initIMU();
 }
 
 void ICM_20948::initIMU() {
+
+	initMag();
+	readMagReg(0x11);
 /*
  * 1. reset device
  * 2. remove device from sleep
@@ -55,7 +60,29 @@ void ICM_20948::initIMU() {
 //}
 
 void ICM_20948::initMag(){
+	uint8_t temp_data = readICMReg(USER_CTRL, 1, 0);
+	temp_data |= 0x02;
+	writeICMReg(USER_CTRL, temp_data, 1, 0);
+	HAL_Delay(100);
 
+	temp_data = readICMReg(USER_CTRL, 1, 0);
+	temp_data |= 0x20;
+	writeICMReg(USER_CTRL, temp_data, 1, 0);
+	HAL_Delay(10);
+
+	temp_data = 0x07;
+	writeICMReg(I2C_MST_CTRL, temp_data, 1, 3);
+	HAL_Delay(10);
+
+	temp_data = 0x40;
+	writeICMReg(LP_CONFIG, temp_data, 1, 0);
+	HAL_Delay(10);
+
+
+	writeMagReg(CNTL3, 0x01);
+	HAL_Delay(100);
+
+	writeMagReg(CNTL2, 0x08);
 }
 
 
@@ -69,7 +96,7 @@ HAL_StatusTypeDef ICM_20948::updateGyro() {
 	uint8_t temp[6];
 	HAL_StatusTypeDef ret;
 
-	ret = readICMReg(GYRO_XOUT_H, temp, 6);
+	ret = readICMReg(GYRO_XOUT_H, temp, 6, 0);
 
 	if (ret == HAL_OK) {
 		gyroReading.x = twoComplementToDec(
@@ -91,7 +118,7 @@ HAL_StatusTypeDef ICM_20948::updateAccel() {
 	uint8_t temp[6];
 	HAL_StatusTypeDef ret;
 
-	ret = readICMReg(ACCEL_XOUT_H, temp, 6);
+	ret = readICMReg(ACCEL_XOUT_H, temp, 6, 0);
 
 	if (ret == HAL_OK) {
 		accelReading.x = twoComplementToDec(
@@ -117,7 +144,7 @@ void ICM_20948::updateTemp() {
 	uint8_t buf[2];
 	HAL_StatusTypeDef ret;
 
-	ret = readICMReg(TEMP_OUT_H, buf, 2);
+	ret = readICMReg(TEMP_OUT_H, buf, 2, 0);
 	int temp = twoComplementToDec(addBinary(buf[1], buf[0]));
 
 	if (ret == HAL_OK) {
@@ -136,16 +163,16 @@ float ICM_20948::getRoll() {
 }
 
 //Angular velocity in each axis
-int16_t ICM_20948::getGyroX()
+float ICM_20948::getGyroX()
 {
 	return gyroReading.x;
 }
 
-int16_t ICM_20948::getGyroY() {
+float ICM_20948::getGyroY() {
 	return gyroReading.y;
 }
 
-int16_t ICM_20948::getGyroZ() {
+float ICM_20948::getGyroZ() {
 	return gyroReading.z;
 }
 
@@ -167,7 +194,7 @@ float ICM_20948::getMagX() {
 	uint8_t buf[2];
 	HAL_StatusTypeDef ret;
 
-	ret = readICMReg(EXT_SLV_SENS_DATA_00, buf, 2);
+	ret = readICMReg(EXT_SLV_SENS_DATA_00, buf, 2, 0);
 	int xMag = twoComplementToDec(addBinary(buf[0], buf[1]));
 
 	if (ret == HAL_OK) {
@@ -177,12 +204,12 @@ float ICM_20948::getMagX() {
 	}
 }
 
-int16_t ICM_20948::getMagY() {
-
-}
-int16_t ICM_20948::getMagZ() {
-
-}
+//int16_t ICM_20948::getMagY() {
+//
+//}
+//int16_t ICM_20948::getMagZ() {
+//
+//}
 
 int16_t ICM_20948::getTemp(){
 	return temperature;
@@ -212,14 +239,16 @@ HAL_StatusTypeDef ICM_20948::writeICMReg(int regAddress, int data,
 }
 
 HAL_StatusTypeDef ICM_20948::readICMReg(int regAddress, uint8_t *buf,
-		int dataAmount) {
+		int dataAmount, int userbank) {
+	selUserBank(userbank);
 	HAL_StatusTypeDef ret;
 	ret = HAL_I2C_Mem_Read(&i2c, address, regAddress, 1, buf, dataAmount,
 	HAL_MAX_DELAY);
 	return ret;
 }
 
-uint8_t ICM_20948::readICMReg(int regAddress, int dataAmount) {
+uint8_t ICM_20948::readICMReg(int regAddress, int dataAmount, int userbank) {
+	selUserBank(userbank);
 	uint8_t buf[1];
 	HAL_I2C_Mem_Read(&i2c, address, regAddress, 1, buf, dataAmount,
 	HAL_MAX_DELAY);
@@ -228,9 +257,30 @@ uint8_t ICM_20948::readICMReg(int regAddress, int dataAmount) {
 
 HAL_StatusTypeDef ICM_20948::selUserBank(uint8_t userbank){
 	HAL_StatusTypeDef ret;
-	ret = writeICMReg(REG_BANK_SEL, userbank << 4, 1, 1);
+	uint8_t temp = userbank << 4;
+	ret = HAL_I2C_Mem_Write(&i2c, address, REG_BANK_SEL, 1, &temp, 1,
+			HAL_MAX_DELAY);
 	return ret;
 }
+
+HAL_StatusTypeDef ICM_20948::readMagReg(uint8_t reg){
+	writeICMReg(I2C_SLV0_ADDR, 0x80|MagAddress, 1, 3);
+	writeICMReg(I2C_SLV0_REG, reg, 1, 3);
+	writeICMReg(I2C_SLV0_CTRL, 0x80|8, 1, 3);
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef ICM_20948::writeMagReg(uint8_t reg, uint8_t data){
+	writeICMReg(I2C_SLV0_ADDR, 0x80 | MagAddress, 1, 3);
+	writeICMReg(I2C_SLV0_REG, reg, 1, 3);
+	writeICMReg(I2C_SLV0_DO, data, 1, 3);
+	writeICMReg(I2C_SLV0_CTRL, 0x80 | 0x01, 1, 3);
+
+	return HAL_OK;
+}
+
+
 
 uint16_t ICM_20948::addBinary(uint8_t lowByte, uint8_t highByte) {
 	return ((highByte << 8) | lowByte);

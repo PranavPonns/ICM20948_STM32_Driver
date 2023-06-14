@@ -1,28 +1,28 @@
 cmath:144:3:constexpr float std::atan2(float, float)	1
 ICM_20948.cpp:10:1:ICM_20948::ICM_20948(I2C_HandleTypeDef, uint8_t)	1
-ICM_20948.cpp:15:6:void ICM_20948::initIMU()	1
-ICM_20948.cpp:57:6:void ICM_20948::initMag()	1
-ICM_20948.cpp:62:6:void ICM_20948::updateIMU()	1
-ICM_20948.cpp:68:19:HAL_StatusTypeDef ICM_20948::updateGyro()	2
-ICM_20948.cpp:90:19:HAL_StatusTypeDef ICM_20948::updateAccel()	2
-ICM_20948.cpp:112:19:HAL_StatusTypeDef ICM_20948::updateMag()	1
-ICM_20948.cpp:116:6:void ICM_20948::updateTemp()	2
-ICM_20948.cpp:130:7:float ICM_20948::getPitch()	1
-ICM_20948.cpp:134:7:float ICM_20948::getRoll()	1
-ICM_20948.cpp:139:9:int16_t ICM_20948::getGyroX()	1
-ICM_20948.cpp:144:9:int16_t ICM_20948::getGyroY()	1
-ICM_20948.cpp:148:9:int16_t ICM_20948::getGyroZ()	1
-ICM_20948.cpp:153:7:float ICM_20948::getAccelX()	1
-ICM_20948.cpp:157:7:float ICM_20948::getAccelY()	1
-ICM_20948.cpp:161:7:float ICM_20948::getAccelZ()	1
-ICM_20948.cpp:166:7:float ICM_20948::getMagX()	2
-ICM_20948.cpp:180:9:int16_t ICM_20948::getMagY()	1
-ICM_20948.cpp:183:9:int16_t ICM_20948::getMagZ()	1
-ICM_20948.cpp:187:9:int16_t ICM_20948::getTemp()	1
-ICM_20948.cpp:193:6:bool ICM_20948::isDeviceReady()	2
-ICM_20948.cpp:202:19:HAL_StatusTypeDef ICM_20948::writeICMReg(int, int, int, int)	1
-ICM_20948.cpp:214:19:HAL_StatusTypeDef ICM_20948::readICMReg(int, uint8_t*, int)	1
-ICM_20948.cpp:222:9:uint8_t ICM_20948::readICMReg(int, int)	1
-ICM_20948.cpp:229:19:HAL_StatusTypeDef ICM_20948::selUserBank(uint8_t)	1
-ICM_20948.cpp:235:10:uint16_t ICM_20948::addBinary(uint8_t, uint8_t)	1
-ICM_20948.cpp:239:9:int16_t ICM_20948::twoComplementToDec(uint16_t)	2
+ICM_20948.cpp:17:6:void ICM_20948::initIMU()	1
+ICM_20948.cpp:62:6:void ICM_20948::initMag()	1
+ICM_20948.cpp:89:6:void ICM_20948::updateIMU()	1
+ICM_20948.cpp:95:19:HAL_StatusTypeDef ICM_20948::updateGyro()	2
+ICM_20948.cpp:117:19:HAL_StatusTypeDef ICM_20948::updateAccel()	2
+ICM_20948.cpp:139:19:HAL_StatusTypeDef ICM_20948::updateMag()	1
+ICM_20948.cpp:143:6:void ICM_20948::updateTemp()	2
+ICM_20948.cpp:157:7:float ICM_20948::getPitch()	1
+ICM_20948.cpp:161:7:float ICM_20948::getRoll()	1
+ICM_20948.cpp:166:7:float ICM_20948::getGyroX()	1
+ICM_20948.cpp:171:7:float ICM_20948::getGyroY()	1
+ICM_20948.cpp:175:7:float ICM_20948::getGyroZ()	1
+ICM_20948.cpp:180:7:float ICM_20948::getAccelX()	1
+ICM_20948.cpp:184:7:float ICM_20948::getAccelY()	1
+ICM_20948.cpp:188:7:float ICM_20948::getAccelZ()	1
+ICM_20948.cpp:193:7:float ICM_20948::getMagX()	2
+ICM_20948.cpp:214:9:int16_t ICM_20948::getTemp()	1
+ICM_20948.cpp:220:6:bool ICM_20948::isDeviceReady()	2
+ICM_20948.cpp:229:19:HAL_StatusTypeDef ICM_20948::writeICMReg(int, int, int, int)	1
+ICM_20948.cpp:241:19:HAL_StatusTypeDef ICM_20948::readICMReg(int, uint8_t*, int, int)	1
+ICM_20948.cpp:250:9:uint8_t ICM_20948::readICMReg(int, int, int)	1
+ICM_20948.cpp:258:19:HAL_StatusTypeDef ICM_20948::selUserBank(uint8_t)	1
+ICM_20948.cpp:266:19:HAL_StatusTypeDef ICM_20948::readMagReg(uint8_t)	1
+ICM_20948.cpp:274:19:HAL_StatusTypeDef ICM_20948::writeMagReg(uint8_t, uint8_t)	1
+ICM_20948.cpp:285:10:uint16_t ICM_20948::addBinary(uint8_t, uint8_t)	1
+ICM_20948.cpp:289:9:int16_t ICM_20948::twoComplementToDec(uint16_t)	2

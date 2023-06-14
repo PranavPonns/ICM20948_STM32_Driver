@@ -19,8 +19,8 @@
 
 #define USER_CTRL 0x03
 
-#define GYRO_SENSITIVITY 0X01
-#define ACCEL_SENSITIVITY 1683.67
+#define GYRO_SENSITIVITY 1/0.07000
+#define ACCEL_SENSITIVITY 1683.67 * 9.8
 #define MAG_SENSITIVITY 1
 #define TEMP_SENSITIVITY 333
 
@@ -63,6 +63,13 @@
 #define I2C_SLV0_ADDR 0x03
 #define I2C_SLV0_REG 0x04
 #define I2C_SLV0_CTRL 0x05
+#define I2C_SLV0_DO 0x06
+
+#define MagAddress 0x0C
+
+#define CNTL2 0x31
+#define CNTL3 0x32
+
 
 //#define
 class ICM_20948 {
@@ -90,9 +97,9 @@ public:
 	float getPitch();
 
 
-	int16_t getGyroX();
-	int16_t getGyroY();
-	int16_t getGyroZ();
+	float getGyroX();
+	float getGyroY();
+	float getGyroZ();
 
 
 	float getAccelX();
@@ -127,8 +134,8 @@ private:
 
 	HAL_StatusTypeDef writeICMReg(int regAddress, int data, int dataAmount,
 			int userbank);
-	HAL_StatusTypeDef readICMReg(int regAddress, uint8_t *buf, int dataAmount);
-	uint8_t readICMReg(int regAddress, int dataAmount);
+	HAL_StatusTypeDef readICMReg(int regAddress, uint8_t *buf, int dataAmount, int userbank);
+	uint8_t readICMReg(int regAddress, int dataAmount, int userbank);
 
 	HAL_StatusTypeDef writeMagReg(uint8_t reg, uint8_t data);
 	HAL_StatusTypeDef readMagReg(uint8_t reg);
